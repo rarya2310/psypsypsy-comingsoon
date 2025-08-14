@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSYPSYPSY - Coming Soon</title>
+    <style>
+        /* Import Google Fonts to match the video */
+        @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Poppins:wght@700&display=swap');
+
+        /* Basic setup to center the animation */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #ffffff;
+            color: #000000;
+            overflow: hidden;
+            /* Set a default font */
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* * This container holds the text elements and has the SVG filter applied.
+         * The filter is the key to the "gooey" effect.
+         */
+        #container {
+            position: relative;
+            /* Applying the SVG filter and a slight blur to smooth the effect */
+            filter: url(#threshold) blur(0.2px);
+            width: 100%;
+            height: 120px; /* Fixed height to prevent layout shifts during font changes */
+            text-align: center;
+        }
+
+        /* The SVG element itself should not be visible or take up space */
+        #filters {
+            position: absolute;
+            height: 0;
+            width: 0;
+        }
+
+        /* * Styling for the two text spans that will be morphed.
+         * They are positioned absolutely on top of each other.
+         * Their opacity and filter (blur) will be controlled by JavaScript.
+         */
+        #text1,
+        #text2 {
+            position: absolute;
+            width: 100%;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 60pt; /* Base font size */
+            font-weight: 700;
+            user-select: none; /* Prevents text selection */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 
+      This container will have the filter applied to it. All children
+      of this element will be affected by the filter.
+    -->
+    <div id="container">
+        <!-- The two text elements that will morph between each other -->
+        <span id="text1"></span>
+        <span id="text2"></span>
+    </div>
+
+    <!-- 
+      This SVG filter is the secret sauce. 
+      The feColorMatrix dramatically increases the alpha contrast,
+      making semi-transparent pixels (from the blur effect) either
+      fully opaque or fully transparent. When the blurred text
+      elements overlap, their semi-transparent areas merge and
+      become a single solid, "gooey" shape.
+    -->
+    <svg id="filters">
+        <defs>
+            <filter id="threshold">
+                <feColorMatrix in="SourceGraphic" type="matrix"
+                    values="1 0 0 0 0
+                            0 1 0 0 0
+                            0 0 1 0 0
+                            0 0 0 255 -140" />
+            </filter>
+        </defs>
+    </svg>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // --- DOM ELEMENTS ---
+            const text1El = document.getElementById("text1");
+            const text2El = document.getElementById("text2");
+
+            // --- CONFIGURATION ---
+            // Array of text objects, including the text itself and its specific font styles
+            const texts = [
+                { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "70pt" },
+                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "60pt" },
+                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "60pt" },
+                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "60pt" },
+            ];
+            const morphTime = 1; // seconds for the morph transition
+            const cooldownTime = 0.25; // seconds to wait after a transition
+
+            // --- ANIMATION STATE VARIABLES ---
+            let textIndex = texts.length - 1;
+            let time = new Date();
+            let morph = 0;
+            let cooldown = cooldownTime;
+
+            // --- HELPER FUNCTIONS ---
+
+            // A helper to apply font styles from the text objects to an element
+            function applyStyles(element, styles) {
+                element.style.fontFamily = styles.font;
+                element.style.fontWeight = styles.weight;
+                element.style.fontSize = styles.size;
+            }
+
+            // Sets the blur and opacity of the two text elements
+            function setMorph(fraction) {
+                // Animate text2 (the incoming text)
+                text2El.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+                text2El.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+
+                // Animate text1 (the outgoing text)
+                fraction = 1 - fraction;
+                text1El.style.filter = `blur(${Math.min(8 / fraction - 8, 100)}px)`;
+                text1El.style.opacity = `${Math.pow(fraction, 0.4) * 100}%`;
+            }
+
+            // Resets the styles during the cooldown period
+            function doCooldown() {
+                morph = 0;
+                text2El.style.filter = "";
+                text2El.style.opacity = "100%";
+                text1El.style.filter = "";
+                text1El.style.opacity = "0%";
+            }
+
+            // Calculates the morph progress and applies the styles
+            function doMorph() {
+                morph -= cooldown;
+                cooldown = 0;
+                let fraction = morph / morphTime;
+                if (fraction > 1) {
+                    cooldown = cooldownTime;
+                    fraction = 1;
+                }
+                setMorph(fraction);
+            }
+
+            // --- MAIN ANIMATION LOOP ---
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const newTime = new Date();
+                const shouldIncrementIndex = cooldown > 0;
+                const dt = (newTime - time) / 1000;
+                time = newTime;
+
+                cooldown -= dt;
+
+                if (cooldown <= 0) {
+                    if (shouldIncrementIndex) {
+                        // A new cycle is starting, so update the text content and styles
+                        textIndex = (textIndex + 1) % texts.length;
+                        const currentTextData = texts[textIndex % texts.length];
+                        const nextTextData = texts[(textIndex + 1) % texts.length];
+
+                        text1El.textContent = currentTextData.text;
+                        applyStyles(text1El, currentTextData);
+
+                        text2El.textContent = nextTextData.text;
+                        applyStyles(text2El, nextTextData);
+                    }
+                    doMorph();
+                } else {
+                    doCooldown();
+                }
+            }
+
+            // --- INITIALIZATION ---
+            
+            // Set the initial text content and styles before starting the animation
+            const initialTextData = texts[textIndex % texts.length];
+            const nextTextData = texts[(textIndex + 1) % texts.length];
+            text1El.textContent = initialTextData.text;
+            applyStyles(text1El, initialTextData);
+            text2El.textContent = nextTextData.text;
+            applyStyles(text2El, nextTextData);
+            
+            // Start the animation loop
+            animate();
+        });
+    </script>
+</body>
+</html>
