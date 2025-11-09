@@ -36,10 +36,10 @@
             filter: url(#threshold) blur(0.2px);
             width: 100%;
             height: auto; /* allow container to grow with larger text */
-            padding: 1.5rem 0; /* vertical space around the morphing text */
+            padding: 0.4rem 0; /* vertical space around the morphing text */
             /* Ensure the container reserves enough height so the absolutely-positioned
                morphing text doesn't overlap the social links below. */
-            min-height: clamp(6.5rem, 28vh, 10rem);
+            min-height: clamp(6.5rem, 16vh, 10rem);
             text-align: center;
         }
 
@@ -83,7 +83,7 @@
         #social-links a {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
-            font-size: clamp(1.05rem, 2.2vw, 1.25rem); /* Responsive, slightly larger */
+            font-size: clamp(0.8rem, 0.4rem, 1.25rem); /* Responsive, slightly larger */
             color: #000000;
             text-decoration: none;
             display: flex; /* Allow icon and text to be on the same line */
@@ -112,14 +112,14 @@
 
         /* Styling for the Font Awesome icons */
         #social-links .icon {
-            font-size: clamp(1.2rem, 3vw, 1.5rem); /* Responsive icon size */
+            font-size: clamp(0.8rem, 1vw, 1.5rem); /* Responsive icon size */
             display: inline-block; /* Ensure transform works correctly */
             transition: transform 0.3s ease; /* Smooth icon transform */
         }
 
         /* PNG social icons (slightly larger and responsive) */
         #social-links .social-icon {
-            width: clamp(1.4rem, 4vw, 1.9rem);
+            width: clamp(0.4rem, 1vw, 1.9rem);
             height: auto;
             display: inline-block;
             vertical-align: middle;
@@ -195,9 +195,9 @@
             // Increased so the morphing text is noticeably larger
             const texts = [
                 //{ text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3.2rem, 14vw, 6rem)" },
-                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.4rem, 9vw, 4.6rem)" },
-                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2rem, 8vw, 4rem)" },
-                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2rem, 8vw, 4rem)" },
+                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.4rem, 3.6vw, 4.6rem)" },
+                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2rem, 3.2vw, 4rem)" },
+                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2rem, 3.2vw, 4rem)" },
             ];
             const morphTime = 1; // seconds for the morph transition
             const cooldownTime = 0.25; // seconds to wait after a transition
