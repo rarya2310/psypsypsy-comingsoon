@@ -111,9 +111,23 @@
             transition: transform 0.3s ease; /* Smooth icon transform */
         }
 
+        /* Logo canvas styling */
+        #logo-canvas {
+            max-width: clamp(8rem, 22vw, 260px);
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 0 2rem 0;
+        }
+
     </style>
 </head>
 <body>
+
+    <!-- Hidden source image and canvas for pixelation animation -->
+    <canvas id="logo-canvas" role="img" aria-label="PSYPSYPSY logo"></canvas>
+    <img id="original-logo" src="images/pixelated_white_logo.png" alt="Original logo" style="display:none">
+
 
     <!-- 
       This container will have the filter applied to it. All children
@@ -262,6 +276,97 @@
             // Start the animation loop
             animate();
         });
+    </script>
+    <script>
+        // Pixelation animation for the logo (uses an offscreen canvas for performance)
+        (function(){
+            const img = document.getElementById('original-logo');
+            const canvas = document.getElementById('logo-canvas');
+            if (!img || !canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // Parameters
+            const minPixelation = 1;
+            const maxPixelation = 48; // how blocky at max
+            const loopDuration = 4000; // ms for full cycle (clear->pixelate->clear)
+
+            const dpr = window.devicePixelRatio || 1;
+
+            // Offscreen canvas to draw the tiny sampled image
+            const off = document.createElement('canvas');
+            const offCtx = off.getContext('2d');
+
+            function resizeCanvas() {
+                // Set internal pixel buffer to image natural size * dpr
+                canvas.width = img.naturalWidth * dpr;
+                canvas.height = img.naturalHeight * dpr;
+                // CSS sizing controlled by CSS (max-width); ensure canvas displays at natural size
+                canvas.style.width = '100%';
+                canvas.style.height = 'auto';
+                // Map drawing coordinates to CSS pixels
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            }
+
+            let start = null;
+
+            img.addEventListener('load', () => {
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+                requestAnimationFrame(loop);
+            });
+
+            img.addEventListener('error', () => {
+                console.error('Failed to load logo for pixelation:', img.src);
+            });
+
+            // If the image is already cached/loaded, start immediately
+            if (img.complete && img.naturalWidth) {
+                resizeCanvas();
+                requestAnimationFrame(loop);
+            }
+
+            function loop(timestamp) {
+                if (!start) start = timestamp;
+                const elapsed = (timestamp - start) % loopDuration;
+                const half = loopDuration / 2;
+
+                // progress 0..1 for each half
+                let progress;
+                if (elapsed < half) {
+                    progress = elapsed / half; // 0 -> 1
+                    // clear -> pixelated
+                    var current = minPixelation + (maxPixelation - minPixelation) * progress;
+                } else {
+                    progress = (elapsed - half) / half; // 0 -> 1
+                    // pixelated -> clear
+                    var current = maxPixelation - (maxPixelation - minPixelation) * progress;
+                }
+
+                const size = Math.max(1, Math.floor(current));
+
+                // Compute CSS pixel dimensions (canvas internal / dpr)
+                const cssW = canvas.width / dpr;
+                const cssH = canvas.height / dpr;
+
+                // Prepare offscreen canvas sized to the sampled (tiny) resolution
+                const sampleW = Math.max(1, Math.floor(cssW / size));
+                const sampleH = Math.max(1, Math.floor(cssH / size));
+                off.width = sampleW;
+                off.height = sampleH;
+
+                // Draw downscaled image into the offscreen canvas
+                offCtx.imageSmoothingEnabled = false;
+                offCtx.clearRect(0, 0, sampleW, sampleH);
+                offCtx.drawImage(img, 0, 0, sampleW, sampleH);
+
+                // Draw the offscreen canvas scaled up to visible canvas
+                ctx.imageSmoothingEnabled = false;
+                ctx.clearRect(0, 0, cssW, cssH);
+                ctx.drawImage(off, 0, 0, sampleW, sampleH, 0, 0, cssW, cssH);
+
+                requestAnimationFrame(loop);
+            }
+        })();
     </script>
 </body>
 </html>
