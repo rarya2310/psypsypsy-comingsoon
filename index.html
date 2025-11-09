@@ -4,25 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PSYPSYPSY - Coming Soon</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Import Google Fonts to match the video */
         @import url('https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Poppins:wght@700&display=swap');
 
-        /* Basic setup to center the animation */
+        /* * Basic setup 
+         * Changed to flex-direction: column to stack the animation and links
+         */
         body {
             margin: 0;
             height: 100vh;
             display: flex;
+            flex-direction: column; /* Stack elements vertically */
             align-items: center;
             justify-content: center;
-            background-color: #ffffff;
+            background-color: #fffff0;
             color: #000000;
             overflow: hidden;
             /* Set a default font */
             font-family: 'Poppins', sans-serif;
         }
 
-        /* * This container holds the text elements and has the SVG filter applied.
+        /*
+         * This container holds the text elements and has the SVG filter applied.
          * The filter is the key to the "gooey" effect.
          */
         #container {
@@ -30,7 +35,7 @@
             /* Applying the SVG filter and a slight blur to smooth the effect */
             filter: url(#threshold) blur(0.2px);
             width: 100%;
-            height: 120px; /* Fixed height to prevent layout shifts during font changes */
+            height: 9rem; /* Approx 144px, to fit largest font */
             text-align: center;
         }
 
@@ -41,7 +46,8 @@
             width: 0;
         }
 
-        /* * Styling for the two text spans that will be morphed.
+        /*
+         * Styling for the two text spans that will be morphed.
          * They are positioned absolutely on top of each other.
          * Their opacity and filter (blur) will be controlled by JavaScript.
          */
@@ -52,23 +58,100 @@
             display: inline-block;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 60pt; /* Base font size */
+            /* font-size: 60pt; /* Base font size - REMOVED for responsiveness */
             font-weight: 700;
             user-select: none; /* Prevents text selection */
             text-align: center;
+        }
+
+        /* --- STYLES FOR SOCIAL LINKS --- */
+
+        /* Container for the social media links */
+        #social-links {
+            margin-top: 40px; /* Space above the links */
+            display: flex;
+            gap: 25px; /* Space between the links */
+        }
+
+        /* Styling for the individual links */
+        #social-links a {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1rem, 2.5vw, 1.15rem); /* Responsive font size */
+            color: #000000;
+            text-decoration: none;
+            display: flex; /* Allow icon and text to be on the same line */
+            align-items: center; /* Vertically align icon and text */
+            gap: 4px; /* Space between icon and text (reduced) */
+            transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for color and transform */
+        }
+
+        /* Hover effect for the links: subtle scale and color change */
+        #social-links a:hover {
+            color: #888888;
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        /* Animation for pulse effect */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Apply pulse animation on hover */
+        #social-links a:hover .icon {
+            animation: pulse 0.6s ease-in-out infinite; /* Apply pulse to icon on link hover */
+        }
+
+        /* Styling for the Font Awesome icons */
+        #social-links .icon {
+            font-size: clamp(1.2rem, 3vw, 1.5rem); /* Responsive icon size */
+            display: inline-block; /* Ensure transform works correctly */
+            transition: transform 0.3s ease; /* Smooth icon transform */
+        }
+
+        /* PNG social icons (colorful) */
+        #social-links .social-icon {
+            width: clamp(1.2rem, 4vw, 1.8rem);
+            height: auto;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.25rem; /* Reduced spacing */
+        }
+
+        /* Logo styling */
+        #logo {
+            max-width: clamp(8rem, 22vw, 260px);
+            height: auto;
+            display: block;
+            margin: 0 0 2rem 0; /* Space below the logo */
         }
     </style>
 </head>
 <body>
 
-    <!-- 
-      This container will have the filter applied to it. All children
-      of this element will be affected by the filter.
-    -->
-    <div id="container">
-        <!-- The two text elements that will morph between each other -->
-        <span id="text1"></span>
+        <!-- Logo (black) -->
+        <img id="logo" src="images/pixelated_white_logo.png" alt="PSYPSYPSY logo (black)">
+
+        <!-- 
+            This container will have the filter applied to it. All children
+            of this element will be affected by the filter.
+        --><div id="container">
+        <!-- The two text elements that will morph between each other --><span id="text1"></span>
         <span id="text2"></span>
+    </div>
+
+    <!-- 
+      NEW: Social media links container.
+      This is placed outside the main text container.
+    --><div id="social-links">
+        <a href="https://www.instagram.com/psypyspsy_r1/" target="_blank" rel="noopener noreferrer">
+            <img class="social-icon" src="images/insta_transparent_icon.png" alt="Instagram"> Instagram
+        </a>
+        <a href="https://www.reddit.com/r/psypsypsy/" target="_blank" rel="noopener noreferrer">
+            <img class="social-icon" src="images/reddit-logo-icon.png" alt="Reddit"> Reddit
+        </a>
     </div>
 
     <!-- 
@@ -78,8 +161,7 @@
       fully opaque or fully transparent. When the blurred text
       elements overlap, their semi-transparent areas merge and
       become a single solid, "gooey" shape.
-    -->
-    <svg id="filters">
+    --><svg id="filters">
         <defs>
             <filter id="threshold">
                 <feColorMatrix in="SourceGraphic" type="matrix"
@@ -100,10 +182,10 @@
             // --- CONFIGURATION ---
             // Array of text objects, including the text itself and its specific font styles
             const texts = [
-                { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "70pt" },
-                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "60pt" },
-                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "60pt" },
-                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "60pt" },
+                // { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3rem, 12vw, 5.8rem)" },
+                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
+                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
+                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
             ];
             const morphTime = 1; // seconds for the morph transition
             const cooldownTime = 0.25; // seconds to wait after a transition
