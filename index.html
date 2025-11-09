@@ -35,7 +35,11 @@
             /* Applying the SVG filter and a slight blur to smooth the effect */
             filter: url(#threshold) blur(0.2px);
             width: 100%;
-            height: 9rem; /* Approx 144px, to fit largest font */
+            height: auto; /* allow container to grow with larger text */
+            padding: 1.5rem 0; /* vertical space around the morphing text */
+            /* Ensure the container reserves enough height so the absolutely-positioned
+               morphing text doesn't overlap the social links below. */
+            min-height: clamp(6.5rem, 28vh, 10rem);
             text-align: center;
         }
 
@@ -57,7 +61,9 @@
             width: 100%;
             display: inline-block;
             left: 50%;
-            transform: translateX(-50%);
+            top: 50%;
+            /* center horizontally and vertically */
+            transform: translate(-50%, -50%);
             /* font-size: 60pt; /* Base font size - REMOVED for responsiveness */
             font-weight: 700;
             user-select: none; /* Prevents text selection */
@@ -68,21 +74,21 @@
 
         /* Container for the social media links */
         #social-links {
-            margin-top: 40px; /* Space above the links */
+            margin-top: 28px; /* Space above the links (slightly reduced) */
             display: flex;
-            gap: 25px; /* Space between the links */
+            gap: 32px; /* Space between the links */
         }
 
         /* Styling for the individual links */
         #social-links a {
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
-            font-size: clamp(1rem, 2.5vw, 1.15rem); /* Responsive font size */
+            font-size: clamp(1.05rem, 2.2vw, 1.25rem); /* Responsive, slightly larger */
             color: #000000;
             text-decoration: none;
             display: flex; /* Allow icon and text to be on the same line */
             align-items: center; /* Vertically align icon and text */
-            gap: 8px; /* Space between icon and text */
+            gap: 4px; /* Reduce space between icon and text */
             transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for color and transform */
         }
 
@@ -111,19 +117,19 @@
             transition: transform 0.3s ease; /* Smooth icon transform */
         }
 
-        /* PNG social icons (match previous icon font size) */
+        /* PNG social icons (slightly larger and responsive) */
         #social-links .social-icon {
-            width: clamp(1.2rem, 3vw, 1.5rem);
+            width: clamp(1.4rem, 4vw, 1.9rem);
             height: auto;
             display: inline-block;
             vertical-align: middle;
-            margin-right: 0.25rem;
+            margin-right: 0.15rem; /* tighten spacing to text */
         }
 
         /* Logo canvas styling — make larger than morphing text */
         #logo-canvas {
-            /* Minimum larger than the largest morphing text (5.8rem) */
-            max-width: clamp(10rem, 28vw, 520px);
+            /* Make the logo significantly larger than the morphing text */
+            max-width: clamp(12rem, 32vw, 720px);
             width: 100%;
             height: auto;
             display: block;
@@ -186,11 +192,12 @@
 
             // --- CONFIGURATION ---
             // Array of text objects, including the text itself and its specific font styles
+            // Increased so the morphing text is noticeably larger
             const texts = [
-                // { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3rem, 12vw, 5.8rem)" },
-                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
-                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
-                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
+                { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3.2rem, 14vw, 6rem)" },
+                { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.4rem, 9vw, 4.6rem)" },
+                { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2rem, 8vw, 4rem)" },
+                { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2rem, 8vw, 4rem)" },
             ];
             const morphTime = 1; // seconds for the morph transition
             const cooldownTime = 0.25; // seconds to wait after a transition
