@@ -120,9 +120,10 @@
             margin-right: 0.25rem;
         }
 
-        /* Logo canvas styling */
+        /* Logo canvas styling — make larger than morphing text */
         #logo-canvas {
-            max-width: clamp(8rem, 22vw, 260px);
+            /* Minimum larger than the largest morphing text (5.8rem) */
+            max-width: clamp(10rem, 28vw, 520px);
             width: 100%;
             height: auto;
             display: block;
@@ -186,7 +187,7 @@
             // --- CONFIGURATION ---
             // Array of text objects, including the text itself and its specific font styles
             const texts = [
-                { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3rem, 12vw, 5.8rem)" },
+                // { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3rem, 12vw, 5.8rem)" },
                 { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
                 { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
                 { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
