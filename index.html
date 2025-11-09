@@ -111,6 +111,15 @@
             transition: transform 0.3s ease; /* Smooth icon transform */
         }
 
+        /* PNG social icons (match previous icon font size) */
+        #social-links .social-icon {
+            width: clamp(1.2rem, 3vw, 1.5rem);
+            height: auto;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 0.25rem;
+        }
+
         /* Logo canvas styling */
         #logo-canvas {
             max-width: clamp(8rem, 22vw, 260px);
@@ -142,10 +151,10 @@
       This is placed outside the main text container.
     --><div id="social-links">
         <a href="https://www.instagram.com/psypyspsy_r1/" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-instagram icon"></i> Instagram
+            <img class="social-icon" src="images/insta_transparent_icon.png" alt="Instagram"> Instagram
         </a>
         <a href="https://www.reddit.com/r/psypsypsy/" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-reddit-alien icon"></i> Reddit
+            <img class="social-icon" src="images/reddit-logo-icon.png" alt="Reddit"> Reddit
         </a>
     </div>
 
