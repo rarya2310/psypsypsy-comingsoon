@@ -82,7 +82,7 @@
             text-decoration: none;
             display: flex; /* Allow icon and text to be on the same line */
             align-items: center; /* Vertically align icon and text */
-            gap: 4px; /* Space between icon and text (reduced) */
+            gap: 8px; /* Space between icon and text */
             transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for color and transform */
         }
 
@@ -111,33 +111,14 @@
             transition: transform 0.3s ease; /* Smooth icon transform */
         }
 
-        /* PNG social icons (colorful) */
-        #social-links .social-icon {
-            width: clamp(1.2rem, 4vw, 1.8rem);
-            height: auto;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 0.25rem; /* Reduced spacing */
-        }
-
-        /* Logo styling */
-        #logo {
-            max-width: clamp(8rem, 22vw, 260px);
-            height: auto;
-            display: block;
-            margin: 0 0 2rem 0; /* Space below the logo */
-        }
     </style>
 </head>
 <body>
 
-        <!-- Logo (black) -->
-        <img id="logo" src="images/pixelated_white_logo.png" alt="PSYPSYPSY logo (black)">
-
-        <!-- 
-            This container will have the filter applied to it. All children
-            of this element will be affected by the filter.
-        --><div id="container">
+    <!-- 
+      This container will have the filter applied to it. All children
+      of this element will be affected by the filter.
+    --><div id="container">
         <!-- The two text elements that will morph between each other --><span id="text1"></span>
         <span id="text2"></span>
     </div>
@@ -147,10 +128,10 @@
       This is placed outside the main text container.
     --><div id="social-links">
         <a href="https://www.instagram.com/psypyspsy_r1/" target="_blank" rel="noopener noreferrer">
-            <img class="social-icon" src="images/insta_transparent_icon.png" alt="Instagram"> Instagram
+            <i class="fab fa-instagram icon"></i> Instagram
         </a>
         <a href="https://www.reddit.com/r/psypsypsy/" target="_blank" rel="noopener noreferrer">
-            <img class="social-icon" src="images/reddit-logo-icon.png" alt="Reddit"> Reddit
+            <i class="fab fa-reddit-alien icon"></i> Reddit
         </a>
     </div>
 
@@ -182,7 +163,7 @@
             // --- CONFIGURATION ---
             // Array of text objects, including the text itself and its specific font styles
             const texts = [
-                // { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3rem, 12vw, 5.8rem)" },
+                { text: "PSYPSYPSY", font: "'Gochi Hand', cursive", weight: "400", size: "clamp(3rem, 12vw, 5.8rem)" },
                 { text: "It's a Vice.", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
                 { text: "MADE IN INDIA", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
                 { text: "Coming Soon", font: "'Poppins', sans-serif", weight: "700", size: "clamp(2.5rem, 10vw, 5rem)" },
